@@ -1,12 +1,7 @@
-// ============================================================
-// Supabase connection config
-// Get these two values from: Supabase Dashboard → Project Settings → API
-// - Project URL          → SUPABASE_URL
-// - anon / public API key → SUPABASE_ANON_KEY
-// (The anon key is safe to expose in frontend code — it only has the
-// permissions your Row Level Security policies allow, set up in schema.sql)
-// ============================================================
-const SUPABASE_URL = "https://exsmfuxjwqajhuejdkui.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_qLSBPyJAOdirXyZK4Tjlig_jTTt-Mca";
+// supabase-config.js
+import { createClient } from '@supabase/supabase-js'
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
