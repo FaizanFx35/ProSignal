@@ -14,16 +14,6 @@
 <!-- ===== OVERLAY (for drawer & menus) ===== -->
 <div class="overlay" id="overlay"></div>
 
-<!-- ===== THREE-DOTS DROPDOWN MENU ===== -->
-<div class="more-menu hidden" id="moreMenu">
-  <a href="terms.html" class="more-item"><span>📜</span> Terms &amp; Conditions</a>
-  <a href="privacy.html" class="more-item"><span>🔒</span> Privacy Policy</a>
-  <a href="disclaimer.html" class="more-item"><span>⚠️</span> Disclaimer</a>
-  <button class="more-item" id="shareBtn"><span>📤</span> Share App</button>
-  <hr class="menu-divider">
-  <button class="more-item text-danger" id="moreLogoutBtn"><span>🚪</span> Logout</button>
-</div>
-
 <!-- ===== SIDEBAR DRAWER ===== -->
 <aside class="drawer" id="drawer">
   <div class="drawer-head">
@@ -58,6 +48,16 @@
     <div class="topbar-right">
       <button class="coin-pill" id="coinPill">🪙 <span id="coinCount">20</span></button>
       <button class="icon-btn" id="moreBtn">⋮</button>
+    </div>
+
+    <!-- THREE-DOTS DROPDOWN MENU (MUST BE INSIDE TOPBAR FOR RELATIVE POSITIONING) -->
+    <div class="more-menu hidden" id="moreMenu">
+      <a href="terms.html" class="more-item"><span>📜</span> Terms &amp; Conditions</a>
+      <a href="privacy.html" class="more-item"><span>🔒</span> Privacy Policy</a>
+      <a href="disclaimer.html" class="more-item"><span>⚠️</span> Disclaimer</a>
+      <button class="more-item" id="shareBtn"><span>📤</span> Share App</button>
+      <hr class="menu-divider">
+      <button class="more-item text-danger" id="moreLogoutBtn"><span>🚪</span> Logout</button>
     </div>
   </header>
 
