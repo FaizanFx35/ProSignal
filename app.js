@@ -3,6 +3,8 @@
 // Requires supabase-config.js loaded before this file.
 // ============================================================
 
+import { supabase } from './supabase-config.js';
+
 const UNLOCK_COST = 20;
 
 const state = {
@@ -21,9 +23,11 @@ function isPremiumActive(cat){
   const p = state.premium[cat];
   return p && p.expires > Date.now();
 }
+
 function isTrialActive(){
   return state.trialUsed && state.trialExpires > Date.now();
 }
+
 function isUnlocked(cat, s){
   if (!s.locked) return true;
   if (isPremiumActive(cat)) return true;
@@ -37,6 +41,7 @@ function isUnlocked(cat, s){
 let toastTimer;
 function toast(msg){
   const t = document.getElementById("toast");
+  if (!t) return;
   t.textContent = msg;
   t.classList.add("show");
   clearTimeout(toastTimer);
@@ -57,8 +62,8 @@ async function loadUserData(){
     console.error("Failed to load profile:", profErr);
     toast("Could not load your account data.");
   } else if (profile){
-    state.coins = profile.coins;
-    state.trialUsed = profile.trial_used;
+    state.coins = profile.coins ?? 0;
+    state.trialUsed = profile.trial_used ?? false;
     state.trialExpires = profile.trial_expires ? new Date(profile.trial_expires).getTime() : 0;
   }
 
@@ -82,7 +87,8 @@ async function loadUserData(){
 // COIN PILL
 // ============================================================
 function refreshCoinPill(){
-  document.getElementById("coinCount").textContent = state.coins;
+  const coinEl = document.getElementById("coinCount");
+  if (coinEl) coinEl.textContent = state.coins;
   const rb = document.getElementById("rewardsBalance");
   if (rb) rb.textContent = state.coins;
 }
@@ -92,8 +98,16 @@ function refreshCoinPill(){
 // ============================================================
 function renderSignals(){
   const list = document.getElementById("signalsList");
+  if (!list) return;
   list.innerHTML = "";
-  const items = SIGNALS[state.cat] || [];
+  
+  const signalsData = window.SIGNALS || {};
+  const items = signalsData[state.cat] || [];
+
+  if (items.length === 0) {
+    list.innerHTML = `<p style="text-align:center; padding:20px; color:var(--text-dim, #888);">No live signals available for this category.</p>`;
+    return;
+  }
 
   let lastDate = null;
   items.forEach((s, idx) => {
@@ -113,7 +127,7 @@ function tpRow(label, tp){
     const icon = tp.done ? `<span class="tp-check">✅</span>` : `<span class="tp-wait">🕒</span>`;
     return `<div class="detail-row"><span class="label">${label}</span><span class="val">${icon}${tp.val}</span></div>`;
   }
-  return `<div class="detail-row"><span class="label">${label}</span><span class="val">${tp}</span></div>`;
+  return `<div class="detail-row"><span class="label">${label}</span><span class="val">${tp || '--'}</span></div>`;
 }
 
 function buildCard(s, idx){
@@ -131,7 +145,7 @@ function buildCard(s, idx){
     rightHtml = `<span class="lock-icon">🔒</span><span class="status-chip live">LIVE SIGNAL</span>`;
   } else if (s.pips !== undefined){
     const pos = s.pips >= 0;
-    rightHtml = `<span class="pips ${pos?'pos':'neg'}">${pos?'+':'--'}${Math.abs(s.pips)} pips</span>
+    rightHtml = `<span class="pips ${pos?'pos':'neg'}">${pos?'+':''}${s.pips} pips</span>
                  <span class="status-chip ${s.status==='SL HIT'?'hit':'done'}">${s.status}</span>`;
   } else {
     rightHtml = `<span class="status-chip live">LIVE SIGNAL</span>`;
@@ -143,7 +157,7 @@ function buildCard(s, idx){
       <div class="signal-title-wrap">
         <div class="pair-line">
           <span class="pair-name">${s.pair}</span>
-          <span class="pair-price">${s.price}</span>
+          <span class="pair-price">${s.price || ''}</span>
         </div>
         <div class="signal-time">${s.time}</div>
       </div>
@@ -164,7 +178,7 @@ function buildCard(s, idx){
     `;
   } else {
     inner.innerHTML = `
-      <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:14px;">
+      <p style="color:var(--text-dim, #888); font-size:0.9rem; margin-bottom:14px;">
         This signal is locked. Unlock it with coins, or upgrade to Premium for unlimited access.
       </p>
       <div class="locked-actions">
@@ -186,7 +200,8 @@ function buildCard(s, idx){
     card.querySelector('[data-action="upgrade"]').addEventListener("click", (e) => {
       e.stopPropagation();
       switchView("premium");
-      document.getElementById("segmentSelect").value = cat;
+      const segSelect = document.getElementById("segmentSelect");
+      if (segSelect) segSelect.value = cat;
       renderPlans();
     });
   }
@@ -203,11 +218,11 @@ function openUnlockModal(cat, s){
   document.getElementById("unlockModal").classList.add("show");
 }
 
-document.getElementById("unlockLater").addEventListener("click", () => {
+document.getElementById("unlockLater")?.addEventListener("click", () => {
   document.getElementById("unlockModal").classList.remove("show");
 });
 
-document.getElementById("unlockConfirm").addEventListener("click", async () => {
+document.getElementById("unlockConfirm")?.addEventListener("click", async () => {
   if (!pendingUnlock) return;
   if (state.coins < UNLOCK_COST){
     document.getElementById("unlockModal").classList.remove("show");
@@ -218,7 +233,6 @@ document.getElementById("unlockConfirm").addEventListener("click", async () => {
   const key = sigKey(pendingUnlock.cat, pendingUnlock.s);
   const newCoins = state.coins - UNLOCK_COST;
 
-  // Persist to Supabase: deduct coins + record the unlock
   const { error: coinErr } = await supabase
     .from("profiles")
     .update({ coins: newCoins })
@@ -244,7 +258,7 @@ document.getElementById("unlockConfirm").addEventListener("click", async () => {
   pendingUnlock = null;
 });
 
-document.getElementById("unlockModal").addEventListener("click", (e) => {
+document.getElementById("unlockModal")?.addEventListener("click", (e) => {
   if (e.target.id === "unlockModal") e.target.classList.remove("show");
 });
 
@@ -261,18 +275,23 @@ document.querySelectorAll(".tab").forEach(tab => {
 });
 
 // ============================================================
-// DRAWER
+// DRAWER & THREE-DOTS MENU LOGIC (FIXED)
 // ============================================================
 const drawer = document.getElementById("drawer");
 const overlay = document.getElementById("overlay");
-document.getElementById("menuBtn").addEventListener("click", () => {
-  drawer.classList.add("open");
-  overlay.classList.add("show");
+const moreMenu = document.getElementById("moreMenu");
+
+document.getElementById("menuBtn")?.addEventListener("click", () => {
+  drawer?.classList.add("open");
+  overlay?.classList.add("show");
+  moreMenu?.classList.add("hidden");
 });
-overlay.addEventListener("click", closeDrawer);
+
+overlay?.addEventListener("click", closeDrawer);
+
 function closeDrawer(){
-  drawer.classList.remove("open");
-  overlay.classList.remove("show");
+  drawer?.classList.remove("open");
+  overlay?.classList.remove("show");
 }
 
 document.querySelectorAll(".drawer-item[data-view]").forEach(item => {
@@ -282,6 +301,34 @@ document.querySelectorAll(".drawer-item[data-view]").forEach(item => {
     closeDrawer();
     switchView(item.dataset.view);
   });
+});
+
+// THREE-DOTS DROPDOWN TOGGLE (FIXED)
+document.getElementById("moreBtn")?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  moreMenu?.classList.toggle("hidden");
+});
+
+document.addEventListener("click", () => {
+  moreMenu?.classList.add("hidden");
+});
+
+// SHARE APP BUTTON FUNCTIONALITY
+document.getElementById("shareBtn")?.addEventListener("click", async () => {
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "ProSignals",
+        text: "Get live Forex & Crypto trading signals!",
+        url: window.location.href,
+      });
+    } catch (err) {
+      console.log("Share cancelled");
+    }
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    toast("Link copied to clipboard! 📋");
+  }
 });
 
 // ============================================================
@@ -300,26 +347,32 @@ const GENERIC_ICONS = {
 
 function switchView(view){
   document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
-  document.getElementById("tabs").style.display = view === "signals" ? "flex" : "none";
-  document.getElementById("pageTitle").textContent = VIEW_TITLES[view] || "ProSignals";
+  const tabsEl = document.getElementById("tabs");
+  if (tabsEl) tabsEl.style.display = view === "signals" ? "flex" : "none";
+  
+  const titleEl = document.getElementById("pageTitle");
+  if (titleEl) titleEl.textContent = VIEW_TITLES[view] || "ProSignals";
 
   if (view === "signals"){
-    document.getElementById("view-signals").classList.remove("hidden");
+    document.getElementById("view-signals")?.classList.remove("hidden");
     renderSignals();
   } else if (view === "trial"){
-    document.getElementById("view-trial").classList.remove("hidden");
+    document.getElementById("view-trial")?.classList.remove("hidden");
     refreshTrialView();
   } else if (view === "premium"){
-    document.getElementById("view-premium").classList.remove("hidden");
+    document.getElementById("view-premium")?.classList.remove("hidden");
     renderPlans();
   } else if (view === "rewards"){
-    document.getElementById("view-rewards").classList.remove("hidden");
+    document.getElementById("view-rewards")?.classList.remove("hidden");
     refreshCoinPill();
   } else {
-    document.getElementById("view-generic").classList.remove("hidden");
-    document.getElementById("genericIcon").textContent = GENERIC_ICONS[view] || "⚙️";
-    document.getElementById("genericTitle").textContent = VIEW_TITLES[view] || "Coming soon";
-    document.getElementById("genericText").textContent = "This section is coming soon. Stay tuned!";
+    document.getElementById("view-generic")?.classList.remove("hidden");
+    const gIcon = document.getElementById("genericIcon");
+    const gTitle = document.getElementById("genericTitle");
+    const gText = document.getElementById("genericText");
+    if (gIcon) gIcon.textContent = GENERIC_ICONS[view] || "⚙️";
+    if (gTitle) gTitle.textContent = VIEW_TITLES[view] || "Coming soon";
+    if (gText) gText.textContent = "This section is coming soon. Stay tuned!";
   }
 }
 
@@ -329,6 +382,8 @@ function switchView(view){
 function refreshTrialView(){
   const statusEl = document.getElementById("trialStatus");
   const btn = document.getElementById("startTrialBtn");
+  if (!statusEl || !btn) return;
+
   if (isTrialActive()){
     const hrsLeft = Math.max(0, Math.ceil((state.trialExpires - Date.now()) / 3600000));
     statusEl.textContent = `✅ Trial active — ${hrsLeft}h remaining. All signals unlocked!`;
@@ -348,7 +403,7 @@ function refreshTrialView(){
   }
 }
 
-document.getElementById("startTrialBtn").addEventListener("click", async () => {
+document.getElementById("startTrialBtn")?.addEventListener("click", async () => {
   if (state.trialUsed) return;
   const expires = new Date(Date.now() + 3 * 24 * 3600 * 1000).toISOString();
 
@@ -372,13 +427,17 @@ document.getElementById("startTrialBtn").addEventListener("click", async () => {
 // ============================================================
 // PREMIUM PLANS
 // ============================================================
-document.getElementById("segmentSelect").addEventListener("change", renderPlans);
+document.getElementById("segmentSelect")?.addEventListener("change", renderPlans);
 
 function renderPlans(){
-  const cat = document.getElementById("segmentSelect").value;
+  const segEl = document.getElementById("segmentSelect");
+  const cat = segEl ? segEl.value : "forex";
   const wrap = document.getElementById("plansList");
+  if (!wrap) return;
   wrap.innerHTML = "";
-  (PLANS[cat] || []).forEach(plan => {
+
+  const plansData = window.PLANS || {};
+  (plansData[cat] || []).forEach(plan => {
     const el = document.createElement("div");
     el.className = "plan-card" + (plan.popular ? " popular" : "");
     el.innerHTML = `
@@ -401,9 +460,6 @@ function renderPlans(){
 }
 
 async function buyPlan(cat, plan){
-  // ⚠️ In production: trigger real payment (Stripe / Google Play Billing) here
-  // and only write to Supabase after payment confirms server-side (e.g. via a
-  // webhook + Supabase Edge Function), never trust the client alone for paid access.
   const days = plan.id === "monthly" ? 30 : plan.id === "quarterly" ? 90 : plan.id === "half" ? 180 : 360;
   const expiresAt = new Date(Date.now() + days * 24 * 3600 * 1000).toISOString();
 
@@ -430,14 +486,16 @@ async function buyPlan(cat, plan){
 }
 
 // ============================================================
-// DAILY REWARDS — Watch Ad (simulated timer; swap in a real ad SDK later)
+// DAILY REWARDS — Watch Ad
 // ============================================================
-document.getElementById("watchAdBtn").addEventListener("click", playAd);
+document.getElementById("watchAdBtn")?.addEventListener("click", playAd);
 
 function playAd(){
   const modal = document.getElementById("adModal");
   const bar = document.getElementById("adProgress");
   const timerText = document.getElementById("adTimerText");
+  if (!modal || !bar || !timerText) return;
+
   modal.classList.add("show");
   bar.style.width = "0%";
   let secs = 5;
@@ -466,7 +524,8 @@ function playAd(){
 
         state.coins = newCoins;
         refreshCoinPill();
-        document.getElementById("rewardsNote").textContent = "+10 coins added! Come back tomorrow for more.";
+        const note = document.getElementById("rewardsNote");
+        if (note) note.textContent = "+10 coins added! Come back tomorrow for more.";
         toast("🎉 +10 coins earned!");
       }, 500);
     }
@@ -474,30 +533,27 @@ function playAd(){
 }
 
 // ============================================================
-// COIN PILL SHORTCUT → rewards
+// SHORTCUTS & LOGOUT
 // ============================================================
-document.getElementById("coinPill").addEventListener("click", () => {
+document.getElementById("coinPill")?.addEventListener("click", () => {
   document.querySelectorAll(".drawer-item").forEach(i => i.classList.remove("active"));
   switchView("rewards");
 });
-document.getElementById("moreBtn").addEventListener("click", () => {
-  document.getElementById("menuBtn").click();
-});
 
-// ============================================================
-// LOGOUT
-// ============================================================
-document.getElementById("logoutBtn").addEventListener("click", async () => {
+async function handleLogout() {
   await supabase.auth.signOut();
   window.location.href = "login.html";
-});
+}
+
+document.getElementById("logoutBtn")?.addEventListener("click", handleLogout);
+document.getElementById("moreLogoutBtn")?.addEventListener("click", handleLogout);
 
 // ============================================================
 // INIT — confirm session, load data from Supabase, then render
 // ============================================================
 async function initAuthAndApp(){
   const { data } = await supabase.auth.getSession();
-  if (!data.session){
+  if (!data?.session){
     window.location.href = "login.html";
     return;
   }
@@ -508,7 +564,6 @@ async function initAuthAndApp(){
   renderPlans();
   switchView("signals");
 
-  // Keep the UI in sync if the session ends elsewhere (e.g. token expiry)
   supabase.auth.onAuthStateChange((event) => {
     if (event === "SIGNED_OUT"){
       window.location.href = "login.html";
