@@ -11,8 +11,18 @@
 </head>
 <body>
 
-<!-- ===== OVERLAY (for drawer) ===== -->
+<!-- ===== OVERLAY (for drawer & menus) ===== -->
 <div class="overlay" id="overlay"></div>
+
+<!-- ===== THREE-DOTS DROPDOWN MENU ===== -->
+<div class="more-menu hidden" id="moreMenu">
+  <a href="terms.html" class="more-item"><span>📜</span> Terms &amp; Conditions</a>
+  <a href="privacy.html" class="more-item"><span>🔒</span> Privacy Policy</a>
+  <a href="disclaimer.html" class="more-item"><span>⚠️</span> Disclaimer</a>
+  <button class="more-item" id="shareBtn"><span>📤</span> Share App</button>
+  <hr class="menu-divider">
+  <button class="more-item text-danger" id="moreLogoutBtn"><span>🚪</span> Logout</button>
+</div>
 
 <!-- ===== SIDEBAR DRAWER ===== -->
 <aside class="drawer" id="drawer">
@@ -108,7 +118,7 @@
     </div>
   </main>
 
-  <!-- GENERIC PLACEHOLDER VIEW (profile, notifications, etc.) -->
+  <!-- GENERIC PLACEHOLDER VIEW -->
   <main class="view hidden" id="view-generic">
     <div class="generic-card">
       <div class="generic-icon" id="genericIcon">⚙️</div>
@@ -147,15 +157,7 @@
 <!-- ===== TOAST ===== -->
 <div class="toast" id="toast"></div>
 
-<script>
-  // Guard: must be logged in to view the dashboard. Checked properly in app.js
-  // once the Supabase session is confirmed (see initAuthAndApp()).
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="supabase-config.js"></script>
-<script src="data.js"></script>
-<script src="app.js"></script>
-  <!-- index.html me -->
+<!-- JavaScript Module Integration -->
 <script type="module" src="app.js"></script>
 </body>
 </html>
