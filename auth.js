@@ -18,11 +18,12 @@ function toast(msg){
 // supabase-config.js still has placeholder values, or the Supabase
 // client failed to initialize.
 // ============================================================
-const CONFIG_OK = typeof supabase !== "undefined"
-  && typeof SUPABASE_URL === "string"
-  && !SUPABASE_URL.includes("YOUR-PROJECT-REF")
-  && typeof SUPABASE_ANON_KEY === "string"
-  && !SUPABASE_ANON_KEY.includes("YOUR-ANON");
+const supabaseClient = window.supabaseClient;
+const CONFIG_OK = !!supabaseClient
+  && typeof window.SUPABASE_URL === "string"
+  && !window.SUPABASE_URL.includes("YOUR-PROJECT-REF")
+  && typeof window.SUPABASE_ANON_KEY === "string"
+  && !window.SUPABASE_ANON_KEY.includes("YOUR-ANON");
 
 if (!CONFIG_OK){
   console.error("ProSignals: supabase-config.js still has placeholder SUPABASE_URL/SUPABASE_ANON_KEY. Login/Register will not work until you set your real project values.");
@@ -40,7 +41,7 @@ function requireConfigOrWarn(){
 document.getElementById("googleLoginBtn").addEventListener("click", async () => {
   if (!requireConfigOrWarn()) return;
   try {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabaseClient.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: window.location.origin + "/dashboard.html" }
     });
@@ -143,7 +144,7 @@ document.getElementById("authSubmitBtn").addEventListener("click", async () => {
     const originalText = btn.textContent;
     btn.textContent = "Sending…";
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
         redirectTo: window.location.origin + "/reset-password.html"
       });
       if (error){
@@ -175,7 +176,7 @@ document.getElementById("authSubmitBtn").addEventListener("click", async () => {
 
   try {
     if (mode === "register"){
-      const { data, error } = await supabase.auth.signUp({ email, password: pass });
+      const { data, error } = await supabaseClient.auth.signUp({ email, password: pass });
       if (error){
         errEl.textContent = error.message;
         return;
@@ -190,7 +191,7 @@ document.getElementById("authSubmitBtn").addEventListener("click", async () => {
       toast("Account created 🎉");
       window.location.href = "dashboard.html";
     } else {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
       if (error){
         errEl.textContent = error.message;
         return;
@@ -213,7 +214,7 @@ document.getElementById("authSubmitBtn").addEventListener("click", async () => {
 if (CONFIG_OK){
   (async () => {
     try {
-      const { data } = await supabase.auth.getSession();
+      const { data } = await supabaseClient.auth.getSession();
       if (data.session){
         window.location.href = "dashboard.html";
       }
