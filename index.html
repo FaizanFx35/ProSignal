@@ -3,157 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ProSignals — Live Trading Signals</title>
-<meta name="theme-color" content="#0b0e14">
+<title>ProSignals — Welcome</title>
+<meta name="theme-color" content="#0a0d13">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="auth.css">
 </head>
 <body>
 
-<!-- ===== OVERLAY (for drawer) ===== -->
-<div class="overlay" id="overlay"></div>
+<div class="auth-wrap">
 
-<!-- ===== SIDEBAR DRAWER ===== -->
-<aside class="drawer" id="drawer">
-  <div class="drawer-head">
-    <div class="drawer-logo">📈 ProSignals</div>
-    <div class="drawer-tag">Trend is friend</div>
-  </div>
-  <nav class="drawer-nav">
-    <button class="drawer-item active" data-view="signals"><span>📊</span> Live Signals</button>
-    <button class="drawer-item" data-view="trial"><span>⏳</span> Free Trial</button>
-    <button class="drawer-item" data-view="premium"><span>💳</span> Upgrade to Premium</button>
-    <button class="drawer-item" data-view="profile"><span>👤</span> My Profile</button>
-    <button class="drawer-item" data-view="notifications"><span>🔔</span> Notifications</button>
-    <button class="drawer-item" data-view="offer"><span>🏷️</span> Special Offer</button>
-    <button class="drawer-item" data-view="rewards"><span>🪙</span> Daily Rewards <i class="dot"></i></button>
-    <button class="drawer-item" data-view="brokers"><span>🏦</span> Top Brokers</button>
-    <button class="drawer-item" data-view="tutorial"><span>❓</span> Tutorial</button>
-    <button class="drawer-item" data-view="inquiries"><span>📋</span> Inquiries</button>
-    <button class="drawer-item" data-view="settings"><span>⚙️</span> Settings</button>
-    <button class="drawer-item" data-view="contact"><span>✉️</span> Contact Us</button>
-    <button class="drawer-item" id="logoutBtn"><span>🚪</span> Logout</button>
-  </nav>
-  <div class="drawer-foot">Version 1.0.0</div>
-</aside>
-
-<!-- ===== APP SHELL ===== -->
-<div class="app">
-
-  <!-- HEADER -->
-  <header class="topbar">
-    <button class="icon-btn" id="menuBtn">☰</button>
-    <h1 id="pageTitle">Live Signals</h1>
-    <div class="topbar-right">
-      <button class="coin-pill" id="coinPill">🪙 <span id="coinCount">20</span></button>
-      <button class="icon-btn" id="moreBtn">⋮</button>
-    </div>
-  </header>
-
-  <!-- TABS -->
-  <div class="tabs" id="tabs">
-    <button class="tab active" data-cat="forex">FOREX</button>
-    <button class="tab" data-cat="comm">COMM</button>
-    <button class="tab" data-cat="index">INDEX</button>
-    <button class="tab" data-cat="crypto">CRYPTO</button>
+  <div class="auth-logo">
+    <img src="icon-192.png" alt="ProSignals logo">
   </div>
 
-  <!-- SIGNALS LIST -->
-  <main class="view" id="view-signals">
-    <div id="signalsList" class="signals-list"></div>
-  </main>
+  <h1 class="auth-title">WELCOME</h1>
+  <p class="auth-subtitle">Trade with confidence</p>
 
-  <!-- FREE TRIAL VIEW -->
-  <main class="view hidden" id="view-trial">
-    <div class="trial-card">
-      <div class="trial-icon">⏳</div>
-      <h2>3-Day Free Trial</h2>
-      <p>Get full access to every live signal — Forex, Commodities, Index &amp; Crypto — free for 3 days. No card required.</p>
-      <button class="btn-primary" id="startTrialBtn">Start Free Trial</button>
-      <p class="trial-status" id="trialStatus"></p>
-    </div>
-  </main>
+  <div class="auth-card">
+    <a href="terms.html" class="auth-link">Disclaimer, Policy, Terms &amp; Conditions</a>
+    <p class="auth-agree">By logging in to the app, you agree to our Terms &amp; Conditions, Policy, and Disclaimer.</p>
 
-  <!-- PREMIUM VIEW -->
-  <main class="view hidden" id="view-premium">
-    <div class="premium-hero">
-      <div class="crown">👑</div>
-      <h2>🔒 Upgrade to Premium</h2>
-      <p>Unlock exclusive signals and features</p>
-    </div>
-    <div class="quote-card">
-      "Trading is something that is not for everyone but everyone can try it once to be successful"
-    </div>
-    <label class="field-label">Select Segment</label>
-    <select id="segmentSelect" class="segment-select">
-      <option value="forex">FOREX</option>
-      <option value="comm">COMMODITY</option>
-      <option value="index">INDEX</option>
-      <option value="crypto">CRYPTO</option>
-    </select>
-    <label class="field-label">Available Plans</label>
-    <div id="plansList" class="plans-list"></div>
-  </main>
+    <hr class="auth-divider">
 
-  <!-- DAILY REWARDS VIEW -->
-  <main class="view hidden" id="view-rewards">
-    <div class="rewards-card">
-      <div class="rewards-icon">🪙</div>
-      <h2>Daily Rewards</h2>
-      <p>Watch a short ad to earn free coins. Use coins to unlock any locked signal instantly.</p>
-      <div class="rewards-balance">Balance: <b id="rewardsBalance">20</b> coins</div>
-      <button class="btn-primary" id="watchAdBtn">▶ Watch Ad (+10 coins)</button>
-      <p class="rewards-note" id="rewardsNote"></p>
-    </div>
-  </main>
+    <button class="auth-btn" id="googleLoginBtn">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.5 29.5 3.5 24 3.5 12.7 3.5 3.5 12.7 3.5 24S12.7 44.5 24 44.5 44.5 35.3 44.5 24c0-1.2-.1-2.4-.3-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.7 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.5 29.5 3.5 24 3.5c-7.6 0-14.1 4.3-17.7 10.6z"/><path fill="#4CAF50" d="M24 44.5c5.4 0 10.3-1.8 14.1-5l-6.5-5.5c-2.1 1.5-4.8 2.4-7.6 2.4-5.3 0-9.7-3.1-11.3-7.6l-6.6 5.1C9.7 40.2 16.3 44.5 24 44.5z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.8l6.5 5.5C39.8 37.5 44.5 31.6 44.5 24c0-1.2-.1-2.4-.3-3.5z"/></svg>
+      <span>Login with Google</span>
+    </button>
 
-  <!-- GENERIC PLACEHOLDER VIEW (profile, notifications, etc.) -->
-  <main class="view hidden" id="view-generic">
-    <div class="generic-card">
-      <div class="generic-icon" id="genericIcon">⚙️</div>
-      <h2 id="genericTitle">Settings</h2>
-      <p id="genericText">This section is coming soon.</p>
+    <div class="auth-or"><span>OR</span></div>
+
+    <button class="auth-btn" id="emailLoginBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 6l10 7 10-7"/></svg>
+      <span>Login with Email</span>
+    </button>
+  </div>
+
+  <div class="help-card">
+    <h3>Need Help?</h3>
+    <p>Contact customer support</p>
+    <div class="help-icons">
+      <a href="mailto:support@prosignals.app" class="help-circle blue" aria-label="Email support">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 6l10 7 10-7"/></svg>
+      </a>
+      <a href="https://wa.me/10000000000" target="_blank" rel="noopener" class="help-circle green" aria-label="WhatsApp support">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.7 4.61 1.91 6.48L4 29l7.71-1.87A11.93 11.93 0 0 0 16 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3zm0 21.6c-1.87 0-3.62-.5-5.13-1.37l-.37-.21-4.57 1.11 1.13-4.46-.24-.38A9.55 9.55 0 0 1 5.4 15c0-5.85 4.75-10.6 10.6-10.6S26.6 9.15 26.6 15 21.85 24.6 16 24.6zm5.4-7.63c-.29-.15-1.74-.86-2.01-.96-.27-.1-.47-.15-.66.15-.2.29-.76.96-.93 1.16-.17.2-.34.22-.63.07-.29-.15-1.24-.46-2.36-1.46-.87-.78-1.46-1.74-1.63-2.03-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.49.1-.2.05-.37-.02-.51-.07-.15-.66-1.6-.91-2.19-.24-.58-.48-.5-.66-.5-.17-.01-.37-.01-.56-.01-.2 0-.51.07-.78.37-.27.29-1.02 1-1.02 2.44s1.05 2.83 1.19 3.02c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.34.19 1.84.12.56-.08 1.74-.71 1.98-1.4.24-.68.24-1.27.17-1.4-.07-.12-.27-.2-.56-.34z"/></svg>
+      </a>
     </div>
-  </main>
+  </div>
 
 </div>
 
-<!-- ===== UNLOCK CONFIRM MODAL ===== -->
-<div class="modal-overlay" id="unlockModal">
-  <div class="modal">
-    <div class="modal-icon">ℹ️</div>
-    <h3>Confirm</h3>
+<!-- ===== EMAIL LOGIN / REGISTER MODAL ===== -->
+<div class="modal-overlay" id="emailModal">
+  <div class="modal auth-modal">
+    <h3 id="emailModalTitle">Login with Email</h3>
     <hr>
-    <p id="unlockText">Are you sure you want to unlock this signal? 20 coins will be deducted from your account.</p>
-    <div class="modal-actions">
-      <button class="btn-ghost" id="unlockLater">Later</button>
-      <button class="btn-primary" id="unlockConfirm">Unlock</button>
+    <div class="field-group">
+      <label>Email</label>
+      <input type="email" id="authEmail" placeholder="you@example.com" autocomplete="email">
     </div>
+    <div class="field-group">
+      <label>Password</label>
+      <input type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <p class="auth-error" id="authError"></p>
+    <button class="btn-primary" id="authSubmitBtn">Login</button>
+    <p class="auth-switch">
+      <span id="authSwitchText">Don't have an account?</span>
+      <a href="#" id="authSwitchLink">Create one</a>
+    </p>
+    <button class="btn-ghost" id="emailModalClose">Cancel</button>
   </div>
 </div>
 
-<!-- ===== AD SIMULATION MODAL ===== -->
-<div class="modal-overlay" id="adModal">
-  <div class="modal">
-    <div class="modal-icon">▶️</div>
-    <h3>Playing Ad…</h3>
-    <hr>
-    <div class="ad-progress-wrap"><div class="ad-progress" id="adProgress"></div></div>
-    <p id="adTimerText">5</p>
-  </div>
-</div>
-
-<!-- ===== TOAST ===== -->
 <div class="toast" id="toast"></div>
 
-<script>
-  // Guard: must be logged in to view the dashboard. Checked properly in app.js
-  // once the Supabase session is confirmed (see initAuthAndApp()).
-</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="data.js"></script>
-<script src="app.js"></script>
+<script src="auth.js"></script>
 </body>
 </html>

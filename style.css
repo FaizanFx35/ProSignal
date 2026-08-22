@@ -53,6 +53,24 @@ select{font-family:inherit;}
   padding:8px 14px; border-radius:20px; font-size:0.95rem;
 }
 
+.more-menu{
+  position:absolute; top:48px; right:0;
+  background:var(--bg-elev); border:1px solid var(--card-border);
+  border-radius:14px; min-width:180px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.5);
+  opacity:0; pointer-events:none; transform:translateY(-8px);
+  transition:all .18s ease; z-index:15; overflow:hidden;
+}
+.more-menu.show{opacity:1; pointer-events:auto; transform:translateY(0);}
+.more-item{
+  display:block; width:100%; text-align:left;
+  padding:14px 18px; color:var(--text); font-size:0.98rem;
+  text-decoration:none; border-bottom:1px solid var(--card-border);
+}
+.more-item:last-child{border-bottom:none;}
+.more-item:active{background:var(--card);}
+.more-item.danger{color:var(--red);}
+
 /* ===== TABS ===== */
 .tabs{
   display:flex; gap:6px;
@@ -173,6 +191,25 @@ select{font-family:inherit;}
   padding:14px 24px; border-radius:14px; width:100%;
 }
 
+/* ===== PROFILE VIEW ===== */
+.profile-card{
+  background:var(--card); border:1px solid var(--card-border);
+  border-radius:var(--radius); padding:32px 24px; margin-top:20px; text-align:center;
+}
+.profile-avatar{
+  width:76px; height:76px; border-radius:50%;
+  background:var(--bg-elev); border:2px solid var(--green);
+  display:flex; align-items:center; justify-content:center;
+  font-size:2.2rem; margin:0 auto 14px;
+}
+.profile-email{color:var(--text-dim); font-size:0.9rem; margin-bottom:22px;}
+.profile-stats{display:flex; justify-content:space-around; margin-bottom:24px; padding:18px 0; border-top:1px solid var(--card-border); border-bottom:1px solid var(--card-border);}
+.profile-stat{display:flex; flex-direction:column; gap:4px;}
+.stat-num{font-size:1.4rem; font-weight:800; color:var(--green);}
+.stat-label{color:var(--text-dim); font-size:0.78rem;}
+.profile-row{display:flex; justify-content:space-between; font-size:0.92rem; padding:10px 0; color:var(--text-dim);}
+.profile-row span:last-child{color:var(--text); font-weight:600;}
+
 /* ===== PREMIUM VIEW ===== */
 .premium-hero{text-align:center; padding:24px 0 14px;}
 .crown{font-size:2.6rem;}
@@ -196,10 +233,11 @@ select{font-family:inherit;}
 .plan-card{
   background:var(--card); border:1px solid var(--card-border);
   border-radius:var(--radius); padding:18px;
-  display:flex; justify-content:space-between; align-items:center;
-  gap:10px;
+  cursor:pointer;
 }
 .plan-card.popular{border-color:var(--gold);}
+.plan-card.expanded{border-color:var(--green);}
+.plan-top{display:flex; justify-content:space-between; align-items:center; gap:10px;}
 .plan-left .plan-name-row{display:flex; align-items:center; gap:8px;}
 .plan-name-row h3{font-size:1.15rem;}
 .badge-popular{
@@ -215,8 +253,61 @@ select{font-family:inherit;}
   font-size:0.72rem; font-weight:700; padding:3px 8px; border-radius:8px;
   margin-top:4px; display:inline-block;
 }
-.plan-card{cursor:pointer;}
-.plan-card:active{background:var(--bg-elev);}
+.plan-chevron{color:var(--text-dim); font-size:0.85rem; text-align:center; margin-top:8px;}
+.plan-expand{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+.plan-card.expanded .plan-expand{max-height:340px; margin-top:14px;}
+.plan-expand-inner{border-top:1px solid var(--card-border); padding-top:14px;}
+.plan-permonth{color:var(--text-dim); font-size:0.9rem; margin-bottom:12px;}
+.plan-feature{display:flex; align-items:center; gap:8px; font-size:0.92rem; margin-bottom:10px;}
+.plan-select-btn{
+  width:100%; margin-top:8px;
+  background:linear-gradient(135deg,#26e08a,#1aa860);
+  color:#04150c; font-weight:800; padding:13px; border-radius:12px; font-size:0.98rem;
+}
+
+.benefits-card{
+  background:var(--card); border:1px solid var(--card-border);
+  border-radius:var(--radius); padding:20px; margin:24px 0 10px;
+}
+.benefits-card h3{margin-bottom:14px; font-size:1.05rem;}
+.benefit-row{display:flex; align-items:center; gap:10px; font-size:0.92rem; margin-bottom:12px; color:var(--text);}
+.benefit-row:last-child{margin-bottom:0;}
+
+/* ===== CHECKOUT VIEW ===== */
+.checkout-summary{
+  display:flex; align-items:center; gap:14px;
+  background:var(--card); border:1px solid var(--card-border);
+  border-radius:var(--radius); padding:18px; margin:20px 0 16px;
+}
+.checkout-avatar{
+  width:52px; height:52px; border-radius:50%;
+  background:var(--bg-elev); border:2px solid var(--green);
+  display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;
+}
+.checkout-name{font-weight:700; font-size:1.05rem;}
+.checkout-email{color:var(--text-dim); font-size:0.85rem;}
+.checkout-plan-card{
+  background:var(--card); border:1px solid var(--card-border);
+  border-radius:var(--radius); padding:20px; margin-bottom:20px;
+}
+.checkout-plan-row{display:flex; justify-content:space-between; margin-bottom:16px;}
+.checkout-label{color:var(--text-dim); font-size:0.82rem; margin-bottom:6px;}
+.checkout-plan-name{font-weight:700; font-size:1.05rem;}
+.checkout-plan-tier{color:var(--text-dim); font-size:0.9rem;}
+.checkout-amount{font-size:1.5rem; font-weight:800; color:var(--green);}
+.checkout-dates{border-top:1px solid var(--card-border); padding-top:14px; display:flex; flex-direction:column; gap:8px; font-size:0.88rem; color:var(--text-dim);}
+.payment-methods{display:flex; flex-direction:column; gap:12px;}
+.payment-method{
+  display:flex; align-items:center; gap:14px;
+  background:var(--card); border:1px solid var(--card-border);
+  border-radius:14px; padding:16px; width:100%; text-align:left;
+}
+.payment-method:active{background:var(--bg-elev);}
+.pm-icon{font-size:1.3rem; width:32px; text-align:center; flex-shrink:0;}
+.pm-text{flex:1; display:flex; flex-direction:column;}
+.pm-text b{font-size:0.98rem;}
+.pm-text small{color:var(--text-dim); font-size:0.78rem; margin-top:2px;}
+.pm-arrow{color:var(--text-dim);}
 
 /* ===== DRAWER ===== */
 .overlay{

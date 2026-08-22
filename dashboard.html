@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ProSignals — Live Trading Signals</title>
+<meta name="theme-color" content="#0b0e14">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== OVERLAY (for drawer) ===== -->
+<div class="overlay" id="overlay"></div>
+
+<!-- ===== SIDEBAR DRAWER ===== -->
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-logo">📈 ProSignals</div>
+    <div class="drawer-tag">Trend is friend</div>
+  </div>
+  <nav class="drawer-nav">
+    <button class="drawer-item active" data-view="signals"><span>📊</span> Live Signals</button>
+    <button class="drawer-item" data-view="trial"><span>⏳</span> Free Trial</button>
+    <button class="drawer-item" data-view="premium"><span>💳</span> Upgrade to Premium</button>
+    <button class="drawer-item" data-view="profile"><span>👤</span> My Profile</button>
+    <button class="drawer-item" data-view="notifications"><span>🔔</span> Notifications</button>
+    <button class="drawer-item" data-view="offer"><span>🏷️</span> Special Offer</button>
+    <button class="drawer-item" data-view="rewards"><span>🪙</span> Daily Rewards <i class="dot"></i></button>
+    <button class="drawer-item" data-view="brokers"><span>🏦</span> Top Brokers</button>
+    <button class="drawer-item" data-view="tutorial"><span>❓</span> Tutorial</button>
+    <button class="drawer-item" data-view="inquiries"><span>📋</span> Inquiries</button>
+    <button class="drawer-item" data-view="apps"><span>⚏</span> Our Other Apps</button>
+    <button class="drawer-item" id="logoutBtn"><span>🚪</span> Logout</button>
+  </nav>
+  <div class="drawer-foot">Version 1.0.0</div>
+</aside>
+
+<!-- ===== APP SHELL ===== -->
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <button class="icon-btn" id="menuBtn">☰</button>
+    <h1 id="pageTitle">Live Signals</h1>
+    <div class="topbar-right" style="position:relative;">
+      <button class="coin-pill" id="coinPill">🪙 <span id="coinCount">20</span></button>
+      <button class="icon-btn" id="moreBtn">⋮</button>
+      <div class="more-menu" id="moreMenu">
+        <button class="more-item" id="shareAppBtn">Share app</button>
+        <button class="more-item" id="rateUsBtn">Rate us</button>
+        <a class="more-item" href="terms.html">Privacy policy</a>
+        <button class="more-item danger" id="menuLogoutBtn">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-cat="forex">FOREX</button>
+    <button class="tab" data-cat="comm">COMM</button>
+    <button class="tab" data-cat="index">INDEX</button>
+    <button class="tab" data-cat="crypto">CRYPTO</button>
+  </div>
+
+  <!-- SIGNALS LIST -->
+  <main class="view" id="view-signals">
+    <div id="signalsList" class="signals-list"></div>
+  </main>
+
+  <!-- FREE TRIAL VIEW -->
+  <main class="view hidden" id="view-trial">
+    <div class="trial-card">
+      <div class="trial-icon">⏳</div>
+      <h2>3-Day Free Trial</h2>
+      <p>Get full access to every live signal — Forex, Commodities, Index &amp; Crypto — free for 3 days. No card required.</p>
+      <button class="btn-primary" id="startTrialBtn">Start Free Trial</button>
+      <p class="trial-status" id="trialStatus"></p>
+    </div>
+  </main>
+
+  <!-- PREMIUM VIEW -->
+  <main class="view hidden" id="view-premium">
+    <div class="premium-hero">
+      <div class="crown">👑</div>
+      <h2>🔒 Upgrade to Premium</h2>
+      <p>Unlock exclusive signals and features</p>
+    </div>
+    <div class="quote-card">
+      "Trading is something that is not for everyone but everyone can try it once to be successful"
+    </div>
+    <label class="field-label">Select Segment</label>
+    <select id="segmentSelect" class="segment-select">
+      <option value="forex">FOREX</option>
+      <option value="comm">COMMODITY</option>
+      <option value="index">INDEX</option>
+      <option value="crypto">CRYPTO</option>
+    </select>
+    <label class="field-label">Available Plans</label>
+    <div id="plansList" class="plans-list"></div>
+
+    <div class="benefits-card">
+      <h3>Premium Benefits</h3>
+      <div class="benefit-row"><span class="tp-check">✅</span> Exclusive high-accuracy forex signals</div>
+      <div class="benefit-row"><span class="tp-check">✅</span> Real-time push notifications</div>
+      <div class="benefit-row"><span class="tp-check">✅</span> Priority customer support</div>
+    </div>
+  </main>
+
+  <!-- CHECKOUT / PAYMENT VIEW -->
+  <main class="view hidden" id="view-checkout">
+    <div class="checkout-summary">
+      <div class="checkout-avatar" id="checkoutAvatar">👤</div>
+      <div>
+        <div class="checkout-name" id="checkoutName">—</div>
+        <div class="checkout-email" id="checkoutEmail">—</div>
+      </div>
+    </div>
+    <div class="checkout-plan-card">
+      <div class="checkout-plan-row">
+        <div>
+          <div class="checkout-label">Plan Details</div>
+          <div class="checkout-plan-name">Plan: <span id="checkoutCategory">—</span></div>
+          <div class="checkout-plan-tier" id="checkoutTier">—</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="checkout-label">Amount Due</div>
+          <div class="checkout-amount" id="checkoutAmount">$0</div>
+        </div>
+      </div>
+      <div class="checkout-dates">
+        <div>📅 Start date: <span id="checkoutStart">—</span></div>
+        <div>📅 End date: <span id="checkoutEnd">—</span></div>
+      </div>
+    </div>
+
+    <label class="field-label">Select Payment Method</label>
+    <div class="payment-methods">
+      <button class="payment-method" data-method="playbilling">
+        <span class="pm-icon">▶</span>
+        <span class="pm-text"><b>Google Play Billing</b><small>Secured by Google Play</small></span>
+        <span class="pm-arrow">→</span>
+      </button>
+      <button class="payment-method" data-method="card">
+        <span class="pm-icon">💳</span>
+        <span class="pm-text"><b>Card Payment</b><small>Secured by Stripe</small></span>
+        <span class="pm-arrow">→</span>
+      </button>
+      <button class="payment-method" data-method="crypto">
+        <span class="pm-icon">₿</span>
+        <span class="pm-text"><b>Crypto Payment</b><small>Pay using any crypto wallet</small></span>
+        <span class="pm-arrow">→</span>
+      </button>
+    </div>
+
+    <div class="help-card" style="margin-top:24px;">
+      <h3>Need Help?</h3>
+      <p>Contact customer support</p>
+      <div class="help-icons">
+        <a href="mailto:support@prosignals.app" class="help-circle blue">✉️</a>
+        <a href="https://wa.me/10000000000" target="_blank" rel="noopener" class="help-circle green">📞</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- DAILY REWARDS VIEW -->
+  <main class="view hidden" id="view-rewards">
+    <div class="rewards-card">
+      <div class="rewards-icon">🪙</div>
+      <h2>Daily Rewards</h2>
+      <p>Watch a short ad to earn free coins. Use coins to unlock any locked signal instantly.</p>
+      <div class="rewards-balance">Balance: <b id="rewardsBalance">20</b> coins</div>
+      <button class="btn-primary" id="watchAdBtn">▶ Watch Ad (+10 coins)</button>
+      <p class="rewards-note" id="rewardsNote"></p>
+    </div>
+  </main>
+
+  <!-- MY PROFILE VIEW (real account data) -->
+  <main class="view hidden" id="view-profile">
+    <div class="profile-card">
+      <div class="profile-avatar" id="profileAvatar">👤</div>
+      <h2 id="profileName">—</h2>
+      <p class="profile-email" id="profileEmail">—</p>
+      <div class="profile-stats">
+        <div class="profile-stat"><span class="stat-num" id="statCoins">0</span><span class="stat-label">Coins</span></div>
+        <div class="profile-stat"><span class="stat-num" id="statUnlocks">0</span><span class="stat-label">Unlocked</span></div>
+        <div class="profile-stat"><span class="stat-num" id="statPlans">0</span><span class="stat-label">Active Plans</span></div>
+      </div>
+      <div class="profile-row"><span>Member since</span><span id="profileJoined">—</span></div>
+      <div class="profile-row"><span>Free trial</span><span id="profileTrial">—</span></div>
+      <button class="btn-ghost" id="profileLogoutBtn" style="margin-top:20px;">Logout</button>
+    </div>
+  </main>
+
+  <!-- GENERIC PLACEHOLDER VIEW (notifications, offers, etc.) -->
+  <main class="view hidden" id="view-generic">
+    <div class="generic-card">
+      <div class="generic-icon" id="genericIcon">⚙️</div>
+      <h2 id="genericTitle">Settings</h2>
+      <p id="genericText">This section is coming soon.</p>
+    </div>
+  </main>
+
+</div>
+
+<!-- ===== UNLOCK CONFIRM MODAL ===== -->
+<div class="modal-overlay" id="unlockModal">
+  <div class="modal">
+    <div class="modal-icon">ℹ️</div>
+    <h3>Confirm</h3>
+    <hr>
+    <p id="unlockText">Are you sure you want to unlock this signal? 20 coins will be deducted from your account.</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="unlockLater">Later</button>
+      <button class="btn-primary" id="unlockConfirm">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== AD SIMULATION MODAL ===== -->
+<div class="modal-overlay" id="adModal">
+  <div class="modal">
+    <div class="modal-icon">▶️</div>
+    <h3>Playing Ad…</h3>
+    <hr>
+    <div class="ad-progress-wrap"><div class="ad-progress" id="adProgress"></div></div>
+    <p id="adTimerText">5</p>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Guard: must be logged in to view the dashboard. Checked properly in app.js
+  // once the Supabase session is confirmed (see initAuthAndApp()).
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
