@@ -489,7 +489,7 @@ document.getElementById("moreBtn").addEventListener("click", () => {
 // ============================================================
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   await supabase.auth.signOut();
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 });
 
 // ============================================================
@@ -498,7 +498,7 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
 async function initAuthAndApp(){
   const { data } = await supabase.auth.getSession();
   if (!data.session){
-    window.location.href = "login.html";
+    window.location.href = "index.html";
     return;
   }
   state.user = data.session.user;
@@ -511,7 +511,7 @@ async function initAuthAndApp(){
   // Keep the UI in sync if the session ends elsewhere (e.g. token expiry)
   supabase.auth.onAuthStateChange((event) => {
     if (event === "SIGNED_OUT"){
-      window.location.href = "login.html";
+      window.location.href = "index.html";
     }
   });
 }
